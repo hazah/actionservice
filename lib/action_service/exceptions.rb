@@ -1,4 +1,4 @@
-module Kindergarten
+module ActionService
   # Signals unallowed access
   class AccessDenied < CanCan::AccessDenied
     def initialize(action, target, opts)

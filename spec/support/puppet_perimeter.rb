@@ -1,4 +1,4 @@
-class PuppetPerimeter < Kindergarten::Perimeter
+class PuppetPerimeter < ActionService::Perimeter
   purpose :puppets
 
   class Puppet

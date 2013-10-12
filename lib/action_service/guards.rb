@@ -1,11 +1,11 @@
-module Kindergarten
+module ActionService
   # Hash with only allowed keys
   class ScrubbedHash < Hash; end
 
   # Hash with only allowed keys and untainted values
   class RinsedHash < Hash; end
 
-  module Governesses
+  module Guards
     class << self
       attr_accessor :forbidden_keys
     end
@@ -14,6 +14,6 @@ module Kindergarten
   end
 end
 
-require "kindergarten/governesses/head_governess"
-require "kindergarten/governesses/strict_governess"
-require "kindergarten/governesses/easy_governess"
+require "action_service/guards/head_guard"
+require "action_service/guards/strict_guard"
+require "action_service/guards/easy_guard"

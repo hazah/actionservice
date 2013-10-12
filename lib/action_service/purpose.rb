@@ -1,4 +1,4 @@
-module Kindergarten
+module ActionService
   # Keep track of a single purpose
   class Purpose
     attr_reader :name, :methods, :sandbox, :subscriptions
@@ -16,18 +16,18 @@ module Kindergarten
 
     def add_perimeter(perimeter, instance)
       if perimeter.exposed_methods.blank?
-        raise Kindergarten::Perimeter::NoExposedMethods.new(perimeter)
+        raise ActionService::Perimeter::NoExposedMethods.new(perimeter)
       end
 
       perimeter.exposed_methods.each do |name|
         if RESTRICTED_METHOD_NAMES.include?(name)
           raise(
-            Kindergarten::Perimeter::RestrictedMethodError.new(perimeter, name)
+            ActionService::Perimeter::RestrictedMethodError.new(perimeter, name)
           )
 
         elsif @methods.has_key?(name)
 
-          Kindergarten.warning "overriding already sandboxed method #{@name}.#{name}"
+          ActionService.warning "overriding already sandboxed method #{@name}.#{name}"
         end
 
         @methods[name] = instance
@@ -44,7 +44,7 @@ module Kindergarten
     end
 
     def fire(event_name, payload=nil)
-      event = Kindergarten::Event.new(event_name, self.name, payload)
+      event = ActionService::Event.new(event_name, self.name, payload)
 
       if @subscriptions.has_key?(event_name)
         @subscriptions[event_name].each do |proc|

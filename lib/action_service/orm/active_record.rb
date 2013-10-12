@@ -1,4 +1,4 @@
-module Kindergarten::ORM
+module ActionService::ORM
   module ActiveRecord
     def self.included(base)
       base.extend(ClassMethods)
@@ -21,8 +21,8 @@ module Kindergarten::ORM
 
       def check(method, *args)
         required = self.force_rinsed? ?
-          Kindergarten::RinsedHash :
-          Kindergarten::ScrubbedHash
+          ActionService::RinsedHash :
+          ActionService::ScrubbedHash
 
         if args[0].is_a?(Array)
           args.each do |input|
@@ -33,7 +33,7 @@ module Kindergarten::ORM
           raise Unscrubbed unless args[0].is_a?(required)
 
         elsif args.any?
-          Kindergarten.warning "#{self.name}.#{method} called with unkown signature"
+          ActionService.warning "#{self.name}.#{method} called with unkown signature"
 
         end
       end

@@ -1,10 +1,10 @@
-module Kindergarten
+module ActionService
   class Sandbox
-    attr_reader :child, :governess, :perimeters, :purpose
+    attr_reader :child, :guard, :perimeters, :purpose
 
     def initialize(child)
       @child     = child
-      @governess = Kindergarten::HeadGoverness.new(child)
+      @guard = ActionService::HeadGuard.new(child)
 
       @purpose    = {}
       @perimeters = []
@@ -19,29 +19,29 @@ module Kindergarten
           return
         end
 
-        # if the perimeter specifies a governess, use that - otherwise appoint
-        # the head governess
+        # if the perimeter specifies a guard, use that - otherwise appoint
+        # the head guard
         child     = self.child
-        governess = perimeter_class.governess ?
-          perimeter_class.governess.new(child) :
-          self.governess
+        guard = perimeter_class.guard ?
+          perimeter_class.guard.new(child) :
+          self.guard
 
-        perimeter = perimeter_class.new(self, governess)
+        perimeter = perimeter_class.new(self, guard)
 
         raise ArgumentError.new(
-          "Module must inherit from Kindergarten::Perimeter"
-        ) unless perimeter.kind_of?(Kindergarten::Perimeter)
+          "Module must inherit from ActionService::Perimeter"
+        ) unless perimeter.kind_of?(ActionService::Perimeter)
 
         self.extend_purpose(perimeter.class, perimeter)
 
-        # the head governess must know all the rules
-        unless governess == self.governess || perimeter_class.govern_proc.nil?
-          self.governess.instance_eval(&perimeter_class.govern_proc)
+        # the head guard must know all the rules
+        unless guard == self.guard || perimeter_class.govern_proc.nil?
+          self.guard.instance_eval(&perimeter_class.govern_proc)
         end
 
         perimeter_class.subscriptions.each do |purpose, events|
           if self.purpose[purpose].nil?
-            Kindergarten.warning "#{perimeter_class} has subscriptions on un-loaded purpose :#{purpose}"
+            ActionService.warning "#{perimeter_class} has subscriptions on un-loaded purpose :#{purpose}"
             next
           end
 
@@ -60,11 +60,11 @@ module Kindergarten
 
     def extend_purpose(perimeter, instance)
       name = perimeter.purpose || raise(
-        Kindergarten::Perimeter::NoPurpose.new(perimeter)
+        ActionService::Perimeter::NoPurpose.new(perimeter)
       )
       name = name.to_sym
 
-      self.purpose[name] ||= Kindergarten::Purpose.new(name, self)
+      self.purpose[name] ||= ActionService::Purpose.new(name, self)
       self.purpose[name].add_perimeter(perimeter, instance)
     end
 
@@ -79,24 +79,24 @@ module Kindergarten
     end
 
     def allows?(action, target)
-      governess.can?(action, target)
+      guard.can?(action, target)
     end
     alias_method :allowed?, :allows?
 
     def disallows?(action, target)
-      governess.cannot?(action, target)
+      guard.cannot?(action, target)
     end
     alias_method :disallowed?, :disallows?
 
     def guard(action, target, opts={})
       unless allows?(action, target)
-        raise Kindergarten::AccessDenied.new(action, target, opts)
+        raise ActionService::AccessDenied.new(action, target, opts)
       end
     end
 
     def subscribe(purpose_name, *events, &block)
       unless (purpose = @purpose[purpose_name.to_sym])
-        Kindergarten.warning "No such purpose has been loaded: #{purpose_name}"
+        ActionService.warning "No such purpose has been loaded: #{purpose_name}"
         return
       end
 
@@ -107,7 +107,7 @@ module Kindergarten
 
     def unsubscribe(purpose_name, *events)
       unless (purpose = @purpose[purpose_name.to_sym])
-        Kindergarten.warning "No such purpose has been loaded: #{purpose_name}"
+        ActionService.warning "No such purpose has been loaded: #{purpose_name}"
         return
       end
 
@@ -132,7 +132,7 @@ module Kindergarten
 
     rescue NoMethodError => ex
       unless purpose.has_key?(name)
-        raise Kindergarten::Sandbox::NoPurposeError.new(name, self)
+        raise ActionService::Sandbox::NoPurposeError.new(name, self)
       end
 
       return purpose[name]

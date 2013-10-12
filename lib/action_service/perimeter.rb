@@ -1,8 +1,8 @@
-module Kindergarten
+module ActionService
   # A Perimeter is used to define the places where the child can play.
   #
   # @example
-  #   class ExamplePerimeter < Kindergarten::Perimeter
+  #   class ExamplePerimeter < ActionService::Perimeter
   #     purpose :books
   #
   #     govern do
@@ -28,7 +28,7 @@ module Kindergarten
       # Can be called multiple times to grow the list.
       #
       # @example
-      #   class BondModule < Kindergarten::Perimeter
+      #   class BondModule < ActionService::Perimeter
       #     # ...
       #     expose :m, :q
       #
@@ -45,7 +45,7 @@ module Kindergarten
       end
       alias_method :sandbox, :expose
 
-      # Instruct the Governess how to govern this perimeter
+      # Instruct the Guard how to govern this perimeter
       def govern(&proc)
         @govern_proc = proc
       end
@@ -55,9 +55,9 @@ module Kindergarten
         purpose.any? ? @purpose = purpose[0] : @purpose
       end
 
-      # Get/set the governess of the perimeter
-      def governess(*klass)
-        klass.any? ? @governess = klass[0] : @governess
+      # Get/set the guard of the perimeter
+      def guard(*klass)
+        klass.any? ? @guard = klass[0] : @guard
       end
 
       # Subscribe to an event from a given purpose
@@ -89,55 +89,55 @@ module Kindergarten
       end
     end
 
-    attr_reader :child, :governess, :sandbox
+    attr_reader :child, :guard, :sandbox
 
     # Obtain an un-sandboxed instance for testing purposes
     #
-    # @return [Perimeter] with the given child and/or governess
+    # @return [Perimeter] with the given child and/or guard
     #
-    def self.instance(child=nil, governess=nil)
-      self.new(child, governess)
+    def self.instance(child=nil, guard=nil)
+      self.new(child, guard)
     end
 
-    def initialize(sandbox, governess)
-      if sandbox.is_a? Kindergarten::Sandbox
+    def initialize(sandbox, guard)
+      if sandbox.is_a? ActionService::Sandbox
         @sandbox   = sandbox
         @child     = sandbox.child
       else
         @child = sandbox
       end
 
-      @governess = governess
+      @_guard = guard
 
-      unless @governess.nil? || self.class.govern_proc.nil?
-        @governess.instance_eval(&self.class.govern_proc)
+      unless @_guard.nil? || self.class.govern_proc.nil?
+        @_guard.instance_eval(&self.class.govern_proc)
       end
     end
 
     delegate :scrub, :rinse, :guard, :unguarded,
-      :to => :governess
+      :to => :@_guard
 
     # @return [Array] List of sandbox methods
     def sandbox_methods
       self.class.exposed_methods
     end
 
-    # Perform a block under the watchful eye off the governess
+    # Perform a block under the watchful eye off the guard
     def governed(method, unguarded=false, &block)
       if unguarded == true
-        self.governess.unguarded do
-          self.governess.governed(method, &block)
+        self.guard.unguarded do
+          self.guard.governed(method, &block)
         end
 
       else
-        self.governess.governed(method, &block)
+        self.guard.governed(method, &block)
 
       end
     end
 
     def fire(event, payload=nil)
       if @sandbox.nil?
-        Kindergarten.warning("There is no sandbox, is this a test-perimeter?")
+        ActionService.warning("There is no sandbox, is this a test-perimeter?")
         return
       end
 

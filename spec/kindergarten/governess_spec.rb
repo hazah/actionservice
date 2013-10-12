@@ -1,27 +1,27 @@
 require 'spec_helper'
 
-describe Kindergarten::HeadGoverness do
+describe ActionService::HeadGuard do
   before(:each) do
-    @governess = Kindergarten::HeadGoverness.new("child")
+    @guard = ActionService::HeadGuard.new("child")
   end
 
   it "should include CanCan ability" do
-    @governess.should be_kind_of(CanCan::Ability)
+    @guard.should be_kind_of(CanCan::Ability)
   end
 
   describe :governing do
     it "should guard the child" do
       expect {
-        @governess.guard(:free, "Willy")
-      }.to raise_error(Kindergarten::AccessDenied)
+        @guard.guard(:free, "Willy")
+      }.to raise_error(ActionService::AccessDenied)
     end
 
     it "should keep a closed eye" do
       expect {
-        @governess.unguarded do
-          @governess.guard(:free, "Willy")
+        @guard.unguarded do
+          @guard.guard(:free, "Willy")
         end
-      }.to_not raise_error(Kindergarten::AccessDenied)
+      }.to_not raise_error(ActionService::AccessDenied)
     end
   end
 
@@ -29,20 +29,20 @@ describe Kindergarten::HeadGoverness do
     it "should scrub attributes" do
       attr     = { :a => 1, :b => 2, :c => 3 }
 
-      scrubbed = @governess.scrub(attr, :a, :c)
+      scrubbed = @guard.scrub(attr, :a, :c)
       scrubbed.should_not be_has_key(:b)
     end
 
     it "should return a ScrubbedHash after scrubbing" do
       attr     = { :a => 1, :b => 2, :c => 3 }
 
-      scrubbed = @governess.scrub(attr, :a, :c)
-      scrubbed.should be_kind_of(Kindergarten::ScrubbedHash)
+      scrubbed = @guard.scrub(attr, :a, :c)
+      scrubbed.should be_kind_of(ActionService::ScrubbedHash)
     end
 
     it "should rinse attributes" do
       attr   = { :a => 1, :b => "2a", :c => 3 }
-      rinsed = @governess.rinse(attr, :a => /(\d+)/, :b => /(\D+)/)
+      rinsed = @guard.rinse(attr, :a => /(\d+)/, :b => /(\D+)/)
 
       rinsed.should_not be_has_key(:c)
       rinsed[:a].should eq "1"
@@ -51,7 +51,7 @@ describe Kindergarten::HeadGoverness do
 
     it "should pass attributes" do
       attr   = { :a => "1", :b => "2a", :c => "3" }
-      rinsed = @governess.rinse(attr, :a => :pass, :c => :pass)
+      rinsed = @guard.rinse(attr, :a => :pass, :c => :pass)
 
       rinsed.should_not be_has_key(:b)
       rinsed[:a].should eq "1"
@@ -59,9 +59,9 @@ describe Kindergarten::HeadGoverness do
     end
     it "should return a RinsedHash after rinsing" do
       attr   = { :a => "1", :b => "2a", :c => "3" }
-      rinsed = @governess.rinse(attr, :a => /(\d+)/, :b => /(\d+)/)
+      rinsed = @guard.rinse(attr, :a => /(\d+)/, :b => /(\d+)/)
 
-      rinsed.should be_kind_of(Kindergarten::RinsedHash)
+      rinsed.should be_kind_of(ActionService::RinsedHash)
     end
   end
 end

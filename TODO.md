@@ -1,4 +1,4 @@
-# Kindergarten TODO
+# ActionService TODO
 
 ## Code
 
@@ -9,7 +9,7 @@
 ## Documentation
 
 * Write more YARD docs
-* Provide better insight into governess hierarchy
+* Provide better insight into guard hierarchy
 
 ## Wiki
 

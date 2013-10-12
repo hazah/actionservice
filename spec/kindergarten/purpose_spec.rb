@@ -1,13 +1,13 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Kindergarten::Purpose do
+describe ActionService::Purpose do
   before(:each) do
-    @sandbox = Kindergarten.sandbox(:child)
+    @sandbox = ActionService.sandbox(:child)
   end
 
   it "should register the methods of a perimeter" do
-    purpose = Kindergarten::Purpose.new(:test, @sandbox)
+    purpose = ActionService::Purpose.new(:test, @sandbox)
 
     expect {
       purpose.add_perimeter(SpecPerimeter, SpecPerimeter.instance(:child))
@@ -17,12 +17,12 @@ describe Kindergarten::Purpose do
   end
 
   it "should warn on duplicate methods" do
-    purpose = Kindergarten::Purpose.new(:test, @sandbox)
+    purpose = ActionService::Purpose.new(:test, @sandbox)
     purpose.add_perimeter(SpecPerimeter, SpecPerimeter.instance(:child))
 
     prev = $stderr.dup
     $stderr = StringIO.new
-    Kindergarten.warnings = true
+    ActionService.warnings = true
 
     expect {
       purpose.add_perimeter(SpecPerimeter, SpecPerimeter.instance(:child))
@@ -31,19 +31,19 @@ describe Kindergarten::Purpose do
     }
 
     $stderr = prev
-    Kindergarten.warnings = false
+    ActionService.warnings = false
   end
 
   it "should fail on restricted methods" do
-    purpose = Kindergarten::Purpose.new(:test, @sandbox)
+    purpose = ActionService::Purpose.new(:test, @sandbox)
     expect {
       purpose.add_perimeter(IllegalModule, IllegalModule.instance(:child))
-    }.to raise_error(Kindergarten::Perimeter::RestrictedMethodError)
+    }.to raise_error(ActionService::Perimeter::RestrictedMethodError)
   end
 
   it "should delegate method execution to the perimeter" do
-    purpose   = Kindergarten::Purpose.new(:test, @sandbox)
-    perimeter = SpecPerimeter.instance(:child, @sandbox.governess)
+    purpose   = ActionService::Purpose.new(:test, @sandbox)
+    perimeter = SpecPerimeter.instance(:child, @sandbox.guard)
     purpose.add_perimeter(SpecPerimeter, perimeter)
 
     expect {

@@ -2,7 +2,7 @@ adapter = RUBY_PLATFORM == 'java' ? 'jdbc/mysql' : 'mysql2'
 require adapter
 
 require 'active_record'
-require "kindergarten/orm/governess"
+require "action_service/orm/guard"
 
 logger = Logger.new File.expand_path( "../support/log/test.log", __FILE__)
 logger.formatter = proc { |severity, datetime, progname, msg|
@@ -12,7 +12,7 @@ logger.formatter = proc { |severity, datetime, progname, msg|
 ActiveRecord::Base.logger = logger
 ActiveRecord::Base.establish_connection(
   :adapter   => adapter.gsub('/', ''),
-  :database  => 'kindergarten_test',
+  :database  => 'action_service_test',
   :username  => 'root',
   :encoding  => 'utf8'
 )

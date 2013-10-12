@@ -1,4 +1,4 @@
-module Kindergarten
+module ActionService
   module ORM
 
     # An exception to throw when unscrubbed input is provided
@@ -13,10 +13,10 @@ module Kindergarten
     end
     
     # Provide ORM tidyness
-    module Governess
+    module Guard
       def self.included(base)
         if base.ancestors.include?(::ActiveRecord::Base)
-          base.send(:include, Kindergarten::ORM::ActiveRecord)
+          base.send(:include, ActionService::ORM::ActiveRecord)
         else
           raise "Your ORM #{base.superclass} for #{base} is not supported (yet)"
         end
@@ -38,4 +38,4 @@ module Kindergarten
   end
 end
 
-require 'kindergarten/orm/active_record'
+require 'action_service/orm/active_record'

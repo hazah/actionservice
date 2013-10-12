@@ -1,4 +1,4 @@
-class DrinkingPerimeter < Kindergarten::Perimeter
+class DrinkingPerimeter < ActionService::Perimeter
   purpose :get_drunk
 
   # supposed to work

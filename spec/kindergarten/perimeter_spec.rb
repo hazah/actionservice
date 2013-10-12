@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Kindergarten::Perimeter do
+describe ActionService::Perimeter do
   describe :class do
     it "should have a :expose method" do
       SpecPerimeter.should respond_to(:expose)
@@ -19,8 +19,8 @@ describe Kindergarten::Perimeter do
       SpecPerimeter.govern_proc.should be_kind_of(Proc)
     end
 
-    it "should return a governess" do
-      SpecPerimeter.governess.should_not be_nil
+    it "should return a guard" do
+      SpecPerimeter.guard.should_not be_nil
     end
 
     it "should return a purpose" do
@@ -56,7 +56,7 @@ describe Kindergarten::Perimeter do
 
   describe :sandbox do
     before(:each) do
-      @sandbox = Kindergarten.sandbox("child")
+      @sandbox = ActionService.sandbox("child")
       @sandbox.extend_perimeter(SpecPerimeter)
     end
 
@@ -64,8 +64,8 @@ describe Kindergarten::Perimeter do
       @sandbox.perimeters.collect(&:class).should include(SpecPerimeter)
     end
 
-    it "should fill the governess" do
-      @sandbox.governess.should_not be_empty
+    it "should fill the guard" do
+      @sandbox.guard.should_not be_empty
     end
 
     it "should have the sandboxed method" do
@@ -75,7 +75,7 @@ describe Kindergarten::Perimeter do
     it "should have the guarded method" do
       expect {
         @sandbox.testing.guarded
-      }.to raise_error(Kindergarten::AccessDenied)
+      }.to raise_error(ActionService::AccessDenied)
     end
 
     it "should not have the unboxed method" do
@@ -91,13 +91,13 @@ describe Kindergarten::Perimeter do
     it "should have the unsafe method" do
       expect {
         @sandbox.testing.unsafe
-      }.to raise_error(Kindergarten::Perimeter::Unguarded)
+      }.to raise_error(ActionService::Perimeter::Unguarded)
     end
   end
 
   describe :unguarded do
     before(:each) do
-      @sandbox = Kindergarten.sandbox("child")
+      @sandbox = ActionService.sandbox("child")
       @sandbox.extend_perimeter(SpecPerimeter)
     end
 
@@ -106,7 +106,7 @@ describe Kindergarten::Perimeter do
         @sandbox.unguarded do
           @sandbox.testing.unsafe
         end
-      }.to_not raise_error(Kindergarten::Perimeter::Unguarded)
+      }.to_not raise_error(ActionService::Perimeter::Unguarded)
     end
 
     it "should allow the not_guarded method" do
@@ -114,7 +114,7 @@ describe Kindergarten::Perimeter do
         @sandbox.unguarded do
           @sandbox.testing.not_guarded
         end
-      }.to_not raise_error(Kindergarten::Perimeter::Unguarded)
+      }.to_not raise_error(ActionService::Perimeter::Unguarded)
     end
   end
 end

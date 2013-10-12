@@ -1,4 +1,4 @@
-class DiningPerimeter < Kindergarten::Perimeter
+class DiningPerimeter < ActionService::Perimeter
   purpose :eating
 
   # should raise Unscrubbed

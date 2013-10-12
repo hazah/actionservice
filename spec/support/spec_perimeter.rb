@@ -1,7 +1,7 @@
-class SpecPerimeter < Kindergarten::Perimeter
+class SpecPerimeter < ActionService::Perimeter
   purpose :testing
 
-  governess Kindergarten::StrictGoverness
+  guard ActionService::StrictGuard
 
   govern do
     can :view, String

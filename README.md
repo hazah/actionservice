@@ -1,30 +1,30 @@
-# Kindergarten
+# ActionService
 
-[![Build Status](https://secure.travis-ci.org/coffeeaddict/kindergarten.png)](http://travis-ci.org/coffeeaddict/kindergarten)
+[![Build Status](https://secure.travis-ci.org/coffeeaddict/action_service.png)](http://travis-ci.org/coffeeaddict/action_service)
 
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/coffeeaddict/kindergarten)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/coffeeaddict/action_service)
 
 A way to achieve modularity and modular security with a sandbox on steroids.
 
 ## Introduction
 
 ### Modules
-A Kindergarten could be seen as collection of service objects, each
+A ActionService could be seen as collection of service objects, each
 representing a 'play area' (think: doll area, lego table, etc. etc.).
 
-Within the realm of kindergarten, the service objects are refered to as
+Within the realm of action_service, the service objects are refered to as
 modules.
 
 ### Sandboxing
-The modules are plugged into the kindergarten and can be governed, both per
-module and kindergarten wide. There are governesses looking for, and preventing
+The modules are plugged into the action_service and can be governed, both per
+module and action_service wide. There are guards looking for, and preventing
 trouble.
 
 Each module is not just exposed as-is; it is sandboxed. Which means that they
 must specify which methods are to be played with.
 
 ### Child
-What good would a kindergarten with a sandbox full of toys be without a child?
+What good would a action_service with a sandbox full of toys be without a child?
 In a Rails context; the most logical choise for a child would be
 the ```current_user```.
 
@@ -32,7 +32,7 @@ the ```current_user```.
 
 Add this line to your application's Gemfile:
 
-    gem 'kindergarten'
+    gem 'action_service'
 
 And then execute:
 
@@ -40,7 +40,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install kindergarten
+    $ gem install action_service
 
 ## Usage
 
@@ -49,7 +49,7 @@ Or install it yourself as:
   child = User.find(2)
 
   # define a module (perimeter) for the child to play in
-  class MyPlayModule < Kindergarten::Perimeter
+  class MyPlayModule < ActionService::Perimeter
     # every module must have a purpose.
     # The purpose also serves as a namespace
     #
@@ -93,11 +93,11 @@ Or install it yourself as:
   end
 
   # load the child (any object) and the module into a sandbox
-  sandbox = Kindergarten.sandbox(child)
+  sandbox = ActionService.sandbox(child)
   sandbox.load_module(MyPlayPerimeter)
 
   # you can now call the sandboxed methods on the sandbox
-  sandbox.playing.watch_tv(CableTV.new)   # fails with Kindergarten::AccessDenied
+  sandbox.playing.watch_tv(CableTV.new)   # fails with ActionService::AccessDenied
   30.times do
     sandbox.playing.eat(Liquorice.new)    # fails after a while
   end
@@ -112,7 +112,7 @@ You are not restricted to only one perimeter/module - that would be most
 boring...
 
 Infact, the above is the essence of things - but there is much much more fun
-hidden inside the Kindergarten. More will follow on the Wiki
+hidden inside the ActionService. More will follow on the Wiki
 
 ## Contributing
 

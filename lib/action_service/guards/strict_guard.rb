@@ -1,12 +1,12 @@
-module Kindergarten
-  # A very strict governess, forces all the sandbox methods to use the guard
+module ActionService
+  # A very strict guard, forces all the sandbox methods to use the guard
   # methods.
   #
   # @note
   #   Does not specify how to rollback when the guard method was not called,
   #   You're on your own there...
   #
-  class StrictGoverness < HeadGoverness
+  class StrictGuard < HeadGuard
     # Check how often the perimeter guarded something
     attr_reader :guard_count
 
@@ -17,7 +17,7 @@ module Kindergarten
 
     # Force the use of guard inside sandbox methods
     #
-    # @raise Kindergarten::Perimeter::Unguarded when the guard count did not
+    # @raise ActionService::Perimeter::Unguarded when the guard count did not
     #   increment during the block execution
     #
     def governed(method, &block)
@@ -25,7 +25,7 @@ module Kindergarten
       res    = yield
 
       if @unguarded != true && self.guard_count == before
-        raise Kindergarten::Perimeter::Unguarded.new(
+        raise ActionService::Perimeter::Unguarded.new(
           "#{method} was executed without propper guarding"
         )
       end

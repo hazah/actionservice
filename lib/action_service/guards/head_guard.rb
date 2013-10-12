@@ -1,8 +1,8 @@
-module Kindergarten
-  # The Governess keeps an eye on the child in the sandbox and makes sure
+module ActionService
+  # The Guard keeps an eye on the child in the sandbox and makes sure
   # she plays nicely and within the bounds of legality
   #
-  class HeadGoverness
+  class HeadGuard
     include CanCan::Ability
     attr_reader :child
 
@@ -12,14 +12,14 @@ module Kindergarten
       @rules     = []
     end
 
-    # The governess is empty when no rules have been defined
+    # The guard is empty when no rules have been defined
     def empty?
       @rules.empty?
     end
 
-    # Perform a sandbox method within the care of the governess.
+    # Perform a sandbox method within the care of the guard.
     #
-    # The HeadGoverness does nothing with it.
+    # The HeadGuard does nothing with it.
     #
     # @param [Symbol] method The name of the method that will be executed (for
     #   logging, record-keeping, raising, etc.)
@@ -38,7 +38,7 @@ module Kindergarten
     # @param opts [Hash] options
     # @option opts [String] :message The message on access denied
     #
-    # @raise [Kindergarten::AccessDenied] when the kindergarten is guarded and
+    # @raise [ActionService::AccessDenied] when the action_service is guarded and
     #   the action is not allowed
     #
     # @return The given target to allow
@@ -49,7 +49,7 @@ module Kindergarten
     #
     def guard(action, target, opts={})
       if guarded? && cannot?(action, target)
-        raise Kindergarten::AccessDenied.new(action, target, opts)
+        raise ActionService::AccessDenied.new(action, target, opts)
       end
 
       # to allow
@@ -61,7 +61,7 @@ module Kindergarten
       return target
     end
 
-    # When a block is given, set the Governess to unguarded during the
+    # When a block is given, set the Guard to unguarded during the
     # execution of the block
     #
     def unguarded(&block)
@@ -97,9 +97,9 @@ module Kindergarten
         attributes = attributes.symbolize_keys
       end
 
-      forbidden = Kindergarten::Governesses.forbidden_keys
+      forbidden = ActionService::Guards.forbidden_keys
 
-      Kindergarten::ScrubbedHash[
+      ActionService::ScrubbedHash[
         attributes.delete_if do |key,value|
           forbidden.include?(key) || !list.include?(key)
         end
@@ -145,7 +145,7 @@ module Kindergarten
         end
       end
 
-      return Kindergarten::RinsedHash[scrubbed]
+      return ActionService::RinsedHash[scrubbed]
     end
   end
 end

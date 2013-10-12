@@ -1,4 +1,4 @@
-class IllegalModule < Kindergarten::Perimeter
+class IllegalModule < ActionService::Perimeter
   purpose :none
 
   expose :fire

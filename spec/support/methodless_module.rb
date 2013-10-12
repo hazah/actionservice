@@ -1,3 +1,3 @@
-class MethodlessModule < Kindergarten::Perimeter
+class MethodlessModule < ActionService::Perimeter
   purpose :none
 end

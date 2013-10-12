@@ -1,30 +1,30 @@
 require 'spec_helper'
 
-describe Kindergarten::Sandbox do
+describe ActionService::Sandbox do
   it "should allow an instance for any child" do
     expect {
-      Kindergarten::Sandbox.new(:any)
+      ActionService::Sandbox.new(:any)
     }.to_not raise_error
   end
 
   it "should know it's child" do
-    sandbox = Kindergarten::Sandbox.new(:its)
+    sandbox = ActionService::Sandbox.new(:its)
     sandbox.child.should eq :its
   end
 
-  it "should create an empty governess for the object" do
-    sandbox = Kindergarten::Sandbox.new(:object)
-    sandbox.governess.should be_kind_of(Kindergarten::HeadGoverness)
-    sandbox.governess.should be_empty
+  it "should create an empty guard for the object" do
+    sandbox = ActionService::Sandbox.new(:object)
+    sandbox.guard.should be_kind_of(ActionService::HeadGuard)
+    sandbox.guard.should be_empty
   end
 
   it "should define an empty perimeter" do
-    sandbox = Kindergarten::Sandbox.new(:child)
+    sandbox = ActionService::Sandbox.new(:child)
     sandbox.perimeters.should be_empty
   end
 
   it "should provide a extend_perimeter function" do
-    sandbox = Kindergarten::Sandbox.new(:child)
+    sandbox = ActionService::Sandbox.new(:child)
     sandbox.should respond_to(:extend_perimeter)
 
     expect {
@@ -34,9 +34,9 @@ describe Kindergarten::Sandbox do
     }
   end
 
-  describe :HeadGoverness do
+  describe :HeadGuard do
     before(:each) do
-      @sandbox = Kindergarten::Sandbox.new(:child)
+      @sandbox = ActionService::Sandbox.new(:child)
       @sandbox.extend_perimeter(SpecPerimeter, PuppetPerimeter)
     end
 
@@ -52,29 +52,29 @@ describe Kindergarten::Sandbox do
     it "should guard the entire sandbox" do
       expect {
         @sandbox.guard(:render, :nothing)
-      }.to raise_error(Kindergarten::AccessDenied)
+      }.to raise_error(ActionService::AccessDenied)
     end
   end
 
   describe :Loading do
     before(:each) do
-      @sandbox = Kindergarten::Sandbox.new(:child)
+      @sandbox = ActionService::Sandbox.new(:child)
     end
 
     it "should not load a module that has no sandboxed methods" do
       expect {
         @sandbox.load_module(MethodlessModule)
-      }.to raise_error(Kindergarten::Perimeter::NoExposedMethods, /MethodlessModule does not expose any methods/)
+      }.to raise_error(ActionService::Perimeter::NoExposedMethods, /MethodlessModule does not expose any methods/)
     end
 
     it "should not load a module that has no purpose" do
       expect {
         @sandbox.load_module(PurposelessModule)
-      }.to raise_error(Kindergarten::Perimeter::NoPurpose, /PurposelessModule does not have a purpose/)
+      }.to raise_error(ActionService::Perimeter::NoPurpose, /PurposelessModule does not have a purpose/)
     end
 
     it "should take on all subscriptions" do
-      Kindergarten::Purpose.stubs(:_subscribe)
+      ActionService::Purpose.stubs(:_subscribe)
 
       @sandbox.load_module(PuppetPerimeter)
       purpose = @sandbox.purpose[:puppets]
@@ -89,13 +89,13 @@ describe Kindergarten::Sandbox do
 
   describe :Purpose do
     before(:each) do
-      @sandbox = Kindergarten::Sandbox.new(:kid)
+      @sandbox = ActionService::Sandbox.new(:kid)
     end
 
     it "should raise error for wrong purpose" do
       expect {
         @sandbox.empty.something
-      }.to raise_error(Kindergarten::Sandbox::NoPurposeError)
+      }.to raise_error(ActionService::Sandbox::NoPurposeError)
     end
 
     it "should return a hash of purposes" do
@@ -105,14 +105,14 @@ describe Kindergarten::Sandbox do
 
   describe :Mediation do
     before(:all) do
-      Kindergarten.warnings = true
+      ActionService.warnings = true
     end
     after(:all) do
-      Kindergarten.warnings = false
+      ActionService.warnings = false
     end
 
     before(:each) do
-      @sandbox = Kindergarten::Sandbox.new(:kid)
+      @sandbox = ActionService::Sandbox.new(:kid)
       @sandbox.load_module(PuppetPerimeter, DiningPerimeter, SpecPerimeter)
     end
 

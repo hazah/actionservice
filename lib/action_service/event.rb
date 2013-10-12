@@ -1,6 +1,6 @@
 require 'rufus-json/automatic'
 
-module Kindergarten
+module ActionService
   class Event
     attr_reader :name, :purpose, :payload
 
